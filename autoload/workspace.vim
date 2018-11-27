@@ -150,7 +150,7 @@ function! s:RenderBuffer(prev, this, next)
     if label == -1
         let name = a:this.name
         if g:workspace_use_devicons
-            let name = WebDevIconsGetFileTypeSymbol(name) . name
+            let name = WebDevIconsGetFileTypeSymbol(name) . " " . name
         endif
 
         let modified_icon = ""
@@ -208,7 +208,7 @@ function! s:BufferValueFits(bvalue, lvalue, tab_count, ltc, rtc)
     let line_width = s:StrLen(a:lvalue)
 
     let tabline_width = value_width + line_width + trunc_width + tabs_width
-    
+
     return tabline_width <= &columns
 endfunction
 
@@ -290,7 +290,7 @@ function! s:RenderTab(prev, this, next, tab_count)
         endfor
 
         let right_chopped_count = len(wbuffers) - (left_chopped_count + left_count + right_count + 1)
-        
+
         if left_chopped_count > 0
             let left_trunc_buffer = s:GetLeftTruncBuffer(left_chopped_count, wbuffers[left_chopped_count - 1].bufno)
             let left_trunc = [0, left_trunc_buffer, fitting_buffers[0][1]]
@@ -349,7 +349,7 @@ endfunction
 
 function! workspace#next()
     let wbuffers = s:GetBuffers()
-    
+
     if len(wbuffers) == 0
         return
     endif
@@ -372,13 +372,13 @@ function! workspace#next()
 
     if next_buf > 0
         exec "silent buffer " . next_buf
-    endif 
+    endif
 endfunction
 
 
 function! workspace#previous()
     let wbuffers = s:GetBuffers()
-    
+
     if len(wbuffers) == 1
         if !wbuffers[0].is_current
             exec "buffer " . wbuffers[0].bufno
@@ -405,7 +405,7 @@ endfunction
 
 function! workspace#delete(bang)
     let wbuffers = s:GetBuffers()
-    
+
     let this = -1
     for wbuf in wbuffers
         if wbuf.is_current
@@ -430,7 +430,7 @@ function! workspace#delete(bang)
     else
         call workspace#previous()
     endif
-     
+
     try
         exec "silent " . this . "bwipe" . a:bang
     catch /^Vim\%((\a\+)\)\=:E89/
@@ -464,7 +464,7 @@ function! workspace#newtab()
         exec "tabnew"
         return
     endif
-    
+
     let current = -1
     let active = -1
     for wbuf in wbuffers
@@ -472,10 +472,10 @@ function! workspace#newtab()
             let current = wbuf.bufno
             break
         elseif wbuf.is_active && active == -1
-            let active = wbuf.bufno        
+            let active = wbuf.bufno
         endif
     endfor
-    
+
     if current == -1
         if active == -1
             let this = wbuffers[0].bufno
